@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shadowed Unit Converter Pro</title>
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiU2hhZG93ZWQgVW5pdCBDb252ZXJ0ZXIgUHJvIiwic2hvcnRfbmFtZSI6IlVuaXRDb252ZXJ0ZXIiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzE4MWEyMCIsInRoZW1lX2NvbG9yIjoiIzZjNjNmZiIsImRlc2NyaXB0aW9uIjoiQSBwcm9mZXNzaW9uYWwsIG1vZGVybiwgbXVsdGktdGhlbWUgdW5pdCBjb252ZXJ0ZXIuIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1UazJJaUJvWldsbmFIUTlJakU1TmlJZ2RtbGxkMEp2ZUQwaU1DQXdJREU1TmlBeE9UWWlJR1pwYkd3OUlpTTJZelkwWm1ZaVBnPT0iLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XSwibGFuZyI6ImVzIn0=" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Pantalla de carga -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-container">
+      <div class="unit-logo">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="35" stroke="url(#gradient)" stroke-width="3" fill="none"/>
+          <path d="M25 40h30M40 25v30" stroke="url(#gradient)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="40" cy="40" r="8" fill="url(#gradient)"/>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6c63ff"/>
+              <stop offset="100%" style="stop-color:#a259f7"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h2 class="loading-title">Shadowed Unit Converter</h2>
+      <div class="loading-spinner"></div>
+      <div class="loading-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="loading-text" id="loadingText">Inicializando...</p>
+    </div>
+  </div>
+
+  <!-- Aplicación principal -->
+  <div id="app" class="app-hidden">
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="app-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none"/>
+              <path d="M10 16h12M16 10v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="16" cy="16" r="3" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="app-title">
+            <h1>Unit Converter</h1>
+            <span class="app-subtitle">Professional Edition</span>
+          </div>
+        </div>
+        <div class="header-controls">
+          <button class="theme-btn" id="themeSwitcher" title="Cambiar tema">
+            <span class="theme-icon">🌙</span>
+          </button>
+          <button class="lang-btn" id="langSwitcher" title="Cambiar idioma">
+            <span class="lang-text">ES</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="converter-card">
+        <div class="card-header">
+          <h2 id="cardTitle">Conversor de Unidades</h2>
+          <div class="card-actions">
+            <button class="action-btn" id="historyBtn" title="Historial">📊</button>
+            <button class="action-btn" id="favoriteBtn" title="Favoritos">⭐</button>
+          </div>
+        </div>
+
+        <form id="convertForm" class="converter-form">
+          <div class="form-group">
+            <label for="categorySelect" id="categoryLabel">Categoría</label>
+            <select id="categorySelect" class="form-select">
+              <option value="length">Longitud</option>
+              <option value="mass">Masa</option>
+              <option value="time">Tiempo</option>
+              <option value="temperature">Temperatura</option>
+              <option value="area">Área</option>
+              <option value="volume">Volumen</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="inputValue" id="valueLabel">Valor</label>
+            <div class="input-wrapper">
+              <input type="number" id="inputValue" class="form-input" placeholder="Ingresa el valor" step="any" required />
+              <button type="button" class="clear-btn" id="clearBtn" title="Limpiar">✕</button>
+            </div>
+          </div>
+
+          <div class="conversion-row">
+            <div class="unit-group">
+              <label id="fromLabel">De</label>
+              <select id="fromUnit" class="form-select"></select>
+            </div>
+            <button type="button" class="swap-btn" id="swapBtn" title="Intercambiar unidades">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4 12l4 4 4-4M12 8l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="unit-group">
+              <label id="toLabel">A</label>
+              <select id="toUnit" class="form-select"></select>
+            </div>
+          </div>
+
+          <button type="submit" class="convert-btn" id="convertBtn">
+            <span id="convertBtnText">Convertir</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
+
+        <div class="result-section">
+          <div class="result-card" id="resultCard">
+            <div class="result-header">
+              <span id="resultLabel">Resultado</span>
+              <button class="copy-btn" id="copyBtn" title="Copiar resultado">📋</button>
+            </div>
+            <div class="result-value" id="resultValue">—</div>
+            <div class="result-formula" id="resultFormula"></div>
+          </div>
+        </div>
+
+        <div class="quick-conversions" id="quickConversions">
+          <h3 id="quickTitle">Conversiones Rápidas</h3>
+          <div class="quick-grid" id="quickGrid"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2024 Shadowed Unit Converter Pro. <span id="rightsText">Todos los derechos reservados</span>.</p>
+        <div class="footer-links">
+          <button class="footer-link" id="aboutLink">Acerca de</button>
+          <button class="footer-link" id="helpLink">Ayuda</button>
+          <button class="footer-link" id="privacyLink">Privacidad</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Panel lateral deslizante -->
+  <div id="sidePanel" class="side-panel">
+    <div class="panel-overlay" id="panelOverlay"></div>
+    <div class="panel-content">
+      <div class="panel-header">
+        <h2 id="panelTitle">Panel</h2>
+        <button class="panel-close" id="panelCloseBtn" aria-label="Cerrar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="panel-body" id="panelBody">
+        <!-- Contenido dinámico -->
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
